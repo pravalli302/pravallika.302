@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #3498db; /* Updated background color to blue */
+            margin: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #f9f9f9;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 3px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .delete-btn {
+            background-color: #ff5252;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Additional styling for the image */
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+    </style>
+    <title>To-Do List</title>
+</head>
+<body>
+    <div class="container">
+        <h1>To-Do List</h1>
+        <input type="text" id="taskInput" placeholder="Add a new task">
+        <button onclick="addTask()">Add</button>
+        <ul id="taskList"></ul>
+        <!-- Adding an image for visual appeal -->
+        <img src="https://via.placeholder.com/600" alt="Placeholder Image">
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadTasks();
+        });
+
+        function addTask() {
+            const taskInput = document.getElementById("taskInput");
+            const taskList = document.getElementById("taskList");
+
+            if (taskInput.value.trim() !== "") {
+                const taskText = taskInput.value.trim();
+
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    ${taskText}
+                    <button class="delete-btn" onclick="deleteTask(this)">Delete</button>
+                `;
+
+                taskList.appendChild(li);
+                saveTask(taskText);
+
+                taskInput.value = "";
+            }
+        }
+
+        function deleteTask(button) {
+            const taskText = button.parentNode.firstChild.textContent;
+            button.parentNode.remove();
+            removeTask(taskText);
+        }
+
+        function saveTask(taskText) {
+            let tasks = localStorage.getItem("tasks") ? JSON.parse(localStorage.getItem("tasks")) : [];
+            tasks.push(taskText);
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+
+        function removeTask(taskText) {
+            let tasks = localStorage.getItem("tasks") ? JSON.parse(localStorage.getItem("tasks")) : [];
+            tasks = tasks.filter(task => task !== taskText);
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+
+        function loadTasks() {
+            const taskList = document.getElementById("taskList");
+            let tasks = localStorage.getItem("tasks") ? JSON.parse(localStorage.getItem("tasks")) : [];
+
+            tasks.forEach(taskText => {
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    ${taskText}
+                    <button class="delete-btn" onclick="deleteTask(this)">Delete</button>
+                `;
+                taskList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
